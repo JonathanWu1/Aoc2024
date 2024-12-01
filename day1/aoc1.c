@@ -2,15 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-typedef struct node{
-	int value;
-	struct node * next;
-	struct node * prev;
-} node_t;
-
-node_t* next(node_t node){
-	return node.next;
-}
 
 int findMin(int* col[], int size){
 	if(size <= 0){
