@@ -1,0 +1,133 @@
+#include <ctype.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define INITIAL_CAPACITY 200
+
+int main() {
+	FILE *file = fopen("input.txt", "r");
+	if (file == NULL) {
+		printf("Unable to open file");
+		return EXIT_FAILURE;
+	}
+
+	int capacity = INITIAL_CAPACITY;
+
+	size_t lineLength = 0;
+	size_t nread = 0;
+	char *line;
+
+	char **lines = malloc(capacity * sizeof(char *));
+	int lineCount = 0;
+
+	while ((nread = getline(&line, &lineLength, file)) != -1) {
+		if (lineCount == capacity) {
+			capacity *= 1.5;
+			char **temp = realloc(lines, capacity);
+			if (!temp) {
+				perror("Failed to reallocate memory");
+				free(line);
+				for (size_t i = 0; i < lineCount; i++)
+					free(lines[i]);
+				free(lines);
+				fclose(file);
+				return EXIT_FAILURE;
+			}
+			lines = temp;
+		}
+		printf("%lu\n", nread);
+		lines[lineCount] = malloc(nread);
+		strncpy(lines[lineCount], line, nread - 1);
+		printf("%lu\n", strlen(lines[lineCount]));
+		lineCount++;
+	}
+
+	printf("\n");
+	bool **lineColors = malloc(capacity * sizeof(bool *));
+	for (int i = 0; i < lineCount; i++) {
+		lineColors[i] = malloc(lineLength);
+		for (int j = 0; j < lineLength; j++) {
+			lineColors[i][j] = false;
+		}
+	}
+
+	printf("\n");
+
+	int count = 0, hcount = 0, vcount = 0;
+
+	for (int i = 0; i < lineCount; i++) {
+		for (int j = 0; j < strlen(lines[i]); j++) {
+			if (lines[i][j] == 'X') {
+				if (j < strlen(lines[i]) - 3 && lines[i][j + 1] == 'M' &&
+					lines[i][j + 2] == 'A' && lines[i][j + 3] == 'S') {
+					lineColors[i][j] = true;
+					lineColors[i][j + 1] = true;
+					lineColors[i][j + 2] = true;
+					lineColors[i][j + 3] = true;
+					count++;
+				}
+				if(i < lineCount -3 && lines[i+1][j] == 'M' && lines[i+2][j] == 'A'
+					&&lines[i+3][j] == 'S'){ 
+					lineColors[i][j] = true; 
+					lineColors[i+1][j] = true;
+					lineColors[i+2][j] = true;
+					lineColors[i+3][j] = true;
+					count++;
+				}
+				/*if(i < lineCount -3 && j < strlen(lines[i]) -3 && lines[i+1][j+1] == 'M'
+					&& lines[i+2][j+2] == 'A' &&lines[i+3][j+3] == 'S'){ lineColors[i][j] =
+					true; lineColors[i+1][j+1] = true; lineColors[i+2][j+2] = true;
+					lineColors[i+3][j+3] = true;
+					count++;
+				}*/
+			} else if (lines[i][j] == 'S') {
+				if (j < strlen(lines[i]) - 3 && lines[i][j + 1] == 'A' &&
+					lines[i][j + 2] == 'M' && lines[i][j + 3] == 'X') {
+					lineColors[i][j] = true;
+					lineColors[i][j + 1] = true;
+					lineColors[i][j + 2] = true;
+					lineColors[i][j + 3] = true;
+					count++;
+				}
+				if(i < lineCount -3 &&lines[i+1][j] ==
+					'A' && lines[i+2][j] == 'M' &&lines[i+3][j] == 'X'){ 
+					lineColors[i][j] = true;
+					lineColors[i+1][j] = true;
+					lineColors[i+2][j] = true;
+					lineColors[i+3][j] = true;
+					count++;
+				}
+				/*if(i < lineCount -3 && j <
+					strlen(lines[i]) -3 && lines[i+1][j+1] == 'A' && lines[i+2][j+2] ==
+					'M' &&lines[i+3][j+3] == 'X'){ lineColors[i][j] = true;
+					lineColors[i+1][j+1] = true;
+					lineColors[i+2][j+2] = true;
+					lineColors[i+3][j+3] = true;
+					count++;
+				}*/
+			}
+			else if(i < lineCount -3 && j < strlen(lines[i]) -3 &&lines[i][j+3] == 'X' && lines[i+1][j+2] == 'M' && lines[i+2][j+1] == 'A'&& lines[i+3][j] == 'S'){ 
+				lineColors[i][j+3] = true;
+				lineColors[i+1][j+2] = true;
+				lineColors[i+2][j+1] = true;
+				lineColors[i+3][j] = true;
+				count++;
+			}
+			else if(i < lineCount -3 && j < strlen(lines[i]) -3 &&lines[i][j+3] == 'S' && lines[i+1][j+2] == 'A' && lines[i+2][j+1] == 'M'&& lines[i+3][j] == 'X'){ 
+				lineColors[i][j+3] = true;
+				lineColors[i+1][j+2] = true;
+				lineColors[i+2][j+1] = true;
+				lineColors[i+3][j] = true;
+				count++;
+			}
+		}
+	}
+
+
+	printf("%d\n", count);
+	printf("%d\n", hcount);
+	printf("%d\n", vcount);
+	return EXIT_SUCCESS;
+}

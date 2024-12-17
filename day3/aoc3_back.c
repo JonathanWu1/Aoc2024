@@ -10,9 +10,7 @@
 #define KNRM  "\x1B[0m"
 
 int allTokens = 0;
-int globalSum = 0, globalSumDont = 0;
-
-bool multiply = true;
+int globalSum = 0;
 int getNumber(char* numberStr){
   if(numberStr == NULL || strlen(numberStr) < 1 || strlen(numberStr) > 3){
     return -1;
@@ -68,7 +66,6 @@ int tokenizeLine(char* line, size_t len){
 
 
     if(num1 != -1 && num2 != -1){
-      printf("%d %d\n", num1, num2);
       sum += num1 * num2;
     }
   }
@@ -87,7 +84,7 @@ int tokenizeLine_1(char* line, size_t len){
   char *number = malloc(len);
   char *tokencopy = malloc(4);
   int num1, num2, sum = 0, prevSum;
-  bool isNumber = false;
+  bool isNumber = false, multiply = true;
   
   while(token != NULL){
     printf("---------\n");
@@ -111,13 +108,19 @@ int tokenizeLine_1(char* line, size_t len){
       }
       free(temp1);
     }
+
     
+    prevSum = globalSum;
     if(multiply){
       allTokens++;
-      printf(KGRN "%s\n\n" KNRM,token);
-      globalSum += tokenizeLine(token, strlen(token));
-      printf(KGRN "Sum:%d\n" KNRM, sum);
+      sum = tokenizeLine(token, strlen(token));
+      globalSum+=sum;
+      printf(KGRN "Sum:%d\n%s\n\n" KNRM, sum,token);
     }
+    else{
+      printf(KRED "%s\n\n" KNRM, token);
+    }
+    printf("GlobalSum: %d Sum:%d Change: %d\n", globalSum, sum,globalSum - prevSum);
 
     token = strtok_r(NULL, "d", &savePtr);
   }
@@ -141,11 +144,10 @@ int main() {
   char *a = malloc(3), *b = malloc(3);
   unsigned long indexComma = 0, indexBracket = 0;
   unsigned long total = 0;
-  int sum = 0;
+
   bool isValid = false;
   while ((read = getline(&line, &len, file)) != -1) {
-       sum+=tokenizeLine_1(line, len);
+       tokenizeLine_1(line, len);
   }
   printf("Sum: %d\n", globalSum);
-  printf("Ans: %d\n", 106921067);
 }

@@ -1,0 +1,41 @@
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
+
+
+tokenizeLine(char* line, size_t len, ){
+  char *token = malloc(len);
+
+  token = strtok(line, "mul(");
+
+
+
+  free(token);
+}
+
+int main() {
+  FILE *file = fopen("input2.txt", "r");
+
+  if (file == NULL) {
+    printf("Unable to open file");
+    return 0;
+  }
+
+  char *line;
+  size_t len = 0;
+  ssize_t read;
+  char *chars;
+  char *token, *commaToken, *bracketToken, *num1Char, *num2Char;
+  char *a = malloc(3), *b = malloc(3);
+  unsigned long indexComma = 0, indexBracket = 0;
+  unsigned long total = 0;
+
+  bool isValid = false;
+  
+  while ((read = getline(&line, &len, file)) != -1) {
+  }
+  printf("%lu", total);
+}
